@@ -1,8 +1,13 @@
 package com.pranitsawant.shimmer.library
 
 import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.os.Build
+import android.view.View
+import com.pranitsawant.shimmer.library.ShimmerViewHelper.AnimationSetupCallback
+
 
 class Shimmer {
     companion object {
@@ -39,6 +44,53 @@ class Shimmer {
 
     fun animationListener(listener : Animator.AnimatorListener)
             = apply{ this.animatorListener = listener }
+
+    fun <V> start(shimmerView: V) where V : View, V : ShimmerViewBase {
+        if (isAnimating() == true) {
+            return
+        }
+        val animate = Runnable {
+            shimmerView.setShimmering(true)
+            var fromX = 0f
+            var toX: Float = shimmerView.getWidth().toFloat()
+            if (direction === ANIMATION_DIRECTION_RTL) {
+                fromX = shimmerView.getWidth().toFloat()
+                toX = 0f
+            }
+            animator = ObjectAnimator.ofFloat(shimmerView, "gradientX", fromX, toX)
+            animator?.repeatCount = repeatCount!!
+            animator?.duration = duration!!
+            animator?.startDelay = startDelay!!
+            animator?.addListener(object : AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    shimmerView.setShimmering(false)
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        shimmerView.postInvalidate()
+                    } else {
+                        shimmerView.postInvalidateOnAnimation()
+                    }
+                    animator = null
+                }
+
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+            if (animatorListener != null) {
+                animator?.addListener(animatorListener)
+            }
+            animator?.start()
+        }
+        if (!shimmerView!!.isSetUp()) {
+            shimmerView.setAnimationSetupCallback(object : AnimationSetupCallback {
+                override fun onSetupAnimation(target: View?) {
+                    animate.run()
+                }
+            })
+        } else {
+            animate.run()
+        }
+    }
 
     fun direction(direction: Int) =
         apply {

@@ -1,11 +1,11 @@
 package com.pranitsawant.shimmer.library
 
-import android.text.BoringLayout
-
 interface ShimmerViewBase {
     fun getGradientX() : Float
 
     fun setGradientX(gradientX: Float)
+
+    fun setShimmering(isShimmering: Boolean)
 
     fun isShimmering() : Boolean
 
