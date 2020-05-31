@@ -11,13 +11,13 @@ import com.pranitsawant.shimmer.library.ShimmerViewHelper.AnimationSetupCallback
 
 class Shimmer {
     companion object {
-        val ANIMATION_DIRECTION_LTR = 0
-        val ANIMATION_DIRECTION_RTL = 1
+        const val ANIMATION_DIRECTION_LTR = 0
+        const val ANIMATION_DIRECTION_RTL = 1
 
-        val DEFAULT_REPEAT_COUNT = ValueAnimator.INFINITE
-        val DEFAULT_DURATION : Long = 1000
-        val DEFAULT_START_DELAY : Long = 0
-        val DEFAULT_DIRECTION : Int= ANIMATION_DIRECTION_LTR
+        const val DEFAULT_REPEAT_COUNT = ValueAnimator.INFINITE
+        const val DEFAULT_DURATION: Long = 1000
+        const val DEFAULT_START_DELAY: Long = 0
+        const val DEFAULT_DIRECTION: Int = ANIMATION_DIRECTION_LTR
     }
 
     private var repeatCount: Int? = null
@@ -112,7 +112,6 @@ class Shimmer {
     }
 
     fun isAnimating() = animator?.isRunning
-
 
 
 }
